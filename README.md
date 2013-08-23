@@ -115,10 +115,10 @@ htmlDoc
 
 Список возможных форматов:
 
-- `js-date` Является форматом по умолчанию. Описан в js библиотеке dateFormat http://blog.stevenlevithan.com/archives/date-time-format
-- `php-date` формат функции `date()` в PHP http://php.net/manual/en/function.date.php
-- `ruby-time-strftime` формат метода `strftime()` в классе `Time` в Ruby http://www.ruby-doc.org/core-2.0/Time.html#method-i-strftime
-- `python-time-strftime` формат функции `strftime()` в библиотеке `time` в Python http://docs.python.org/2/library/time.html#time.strftime
+- `js-date-format` Является форматом по умолчанию. Описан в js библиотеке [dateFormat](http://blog.stevenlevithan.com/archives/date-time-format)
+- `php-date` формат функции [date()](http://php.net/manual/en/function.date.php) в PHP
+- `ruby-time-strftime` формат метода [strftime()](http://www.ruby-doc.org/core-2.0/Time.html#method-i-strftime) в классе `Time` в Ruby
+- `python-time-strftime` формат функции [strftime()](http://docs.python.org/2/library/time.html#time.strftime) в библиотеке `time` в Python
 
 Дескриптор достаточно описать один раз, например в заглавии index.html
 ```html
@@ -141,10 +141,10 @@ htmlDoc
 ```html
 <div class="email"><!-- @email at gmail.com --></div>
 ```
-В таком случае будет генерироваться случайное имя, но домен будет `gmail.com`
+В таком случае будет генерироваться случайное имя, на домен будет `gmail.com`
 
 Ещё одним параметром может быть имя за которым закрепляется сгенерированный имейл.
-Это необходимо в случае если нужно вывести в нескольких места одинаковый имейл.
+Это необходимо в случае если нужно вывести одинаковый имейл в нескольких местах.
 ```html
 <div class="email"><!-- @email Mike --></div>
 ```
@@ -156,3 +156,69 @@ htmlDoc
 ```
 В этом случае будет выведен такой же имейл как и в примере выше.
 Если нужно вывести имейл с одинаковым именем, но разным доменом, то каждый раз нужно будет писать полную запись с доменом.
+
+## Дескрипторы работы с DOM
+
+Эти дескрипторы описывают связи между элементами DOM
+
+Список дескрипторов
+
+- @joined-with
+- @or
+
+### @joined-with
+
+Указывает на два элемента которые всегда должны быть вместе.
+Этот дескриптор нужен в том случае когда нельзя поместить элементы в один контейнер,
+но нужно помнить, что этого нужно избегать.
+Дескриптор должен находиться всегда между двумя элементами.
+```html
+<div class="header"></div>
+<!-- @joined-with -->
+<div class="footer"></div>
+```
+Дескриптор `joined-with` не имеет параметров, по этому после него можно добавлять описание, почему элементы должны быть связаны.
+```html
+<div class="header"></div>
+<!-- @joined-with footer, just because -->
+<div class="footer"></div>
+```
+
+### @or
+
+Указывает на два элемента, один из которых может быть спрятан.
+Это полезно, когда нужно указать, что в контейнере может находиться только один из элементов, например в случае с пошаговой формой.
+```html
+<ol>
+    <li>
+        First name: <input type="text"/>
+        Last name:  <input type="text"/>
+    </li>
+    <!-- @or -->
+    <li>
+        Country: <input type="text"/>
+        City:    <input type="text"/>
+    </li>
+    <!-- @or -->
+    <li>
+        Credit card: <input type="text"/>
+        Pin number:  <input type="text"/>
+    </li>
+
+    <li>
+        Result: <input type="text"/>
+    </li>
+</ol>
+```
+В данном примере указывается, что только одина из трёх первых `li` может находиться в `ol`.
+Последний `li` должен быть обязательно.
+
+Дескриптор `or` может находиться между абсолютно любыми элементами, даже между текстом или другими дескрипторами.
+```html
+<span>Hello mister<!-- @or -->Hello missis</span>
+<span class="date">Today is:
+    <!-- @date m/dd/yy -->
+    <!-- @or -->
+    <!-- @date dddd, mmmm dS, yyyy -->
+</span>
+```
